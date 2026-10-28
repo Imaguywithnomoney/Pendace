@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pendace, one stop shop for pen spinners." />
+  <title>Pendace | Pen Spinning Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="overrides.css" />
+  <link rel="stylesheet" href="builder-images.css" />
+  <link rel="stylesheet" href="responsive-fixes.css" />
+  <link rel="stylesheet" href="builder-fixes.css" />
+  <link rel="stylesheet" href="cart-fixes.css" />
+  <link rel="stylesheet" href="catalog-fixes.css" />
+</head>
+<body>
+  <header id="store-header" class="store-header">
+    <button class="brand" data-view="home" aria-label="Pendace home">
+      <img src="images/PENDACE_1_59x59.png" alt="Pendace" />
+      <span><b>PENDACE</b><small>One stop shop for pen spinners</small></span></button>
+    <button id="mobile-menu" class="mobile-menu" aria-expanded="false">Menu</button>
+   
+    <nav id="store-nav" class="store-nav" aria-label="Store navigation">
+      <button data-view="home">Home</button><button data-view="shop">Shop</button>
+      <button data-view="builder">Pen Mod Builder</button><button data-view="about">About</button>
+      <button class="mobile-login" data-view="login">Sign in</button>
+    </nav>
+
+    <div class="header-icons" aria-label="Store tools">
+      <form id="global-search" class="global-search" role="search">
+        <label class="sr-only" for="global-search-input">Search products</label>
+        <input id="global-search-input" name="query" placeholder="Search pen mods..." />
+        <button type="submit" aria-label="Search">⌕</button></form>
+      <button data-view="favorites" aria-label="Favorites" title="Favorites">♡ <span id="favorite-count">0</span></button>
+      <button data-view="cart" aria-label="Shopping cart" title="Cart">🛒 <span id="cart-count">0</span></button>
+      <button data-account aria-label="User account" title="User account">◉ <span id="account-label">Account</span></button>
+    </div>
+  </header>
+
+  <div id="account-menu" class="account-menu" hidden></div>
+  <main id="app" tabindex="-1"></main>
+
+  <footer id="store-footer">
+    <p>Premium pen mods crafted by Filipino modders and parts fit for every spinner. Well-balanced, weighted to specs, built for competition.</p>
+    <div class="footer-brand"><img src="images/PENDACE_1_59x59.png" alt="" /> PENDACE</div>
+    <small>© 2026 PENDACE. ALL RIGHTS RESERVED. <span>Privacy policy · Terms of use · Rotational warranty</span></small>
+  </footer>
+  
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+@media(max-width:850px){.global-search{display:flex!important;width:34px!important;flex:0 0 34px!important}.global-search input{display:none!important}.global-search button{width:34px!important;border-left:0!important}.header-icons{gap:8px!important}.header-icons button:first-of-type{font-size:17px!important}}
+@media(max-width:520px){.store-header{gap:8px!important}.brand span small{display:none}.global-search{height:30px!important;width:30px!important;flex-basis:30px!important}.global-search button{width:30px!important}.header-icons{gap:3px!important}}

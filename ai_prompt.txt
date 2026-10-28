@@ -1,0 +1,24 @@
+You are given a Figma export package.
+
+Files included:
+- index.html: generated HTML structure and inline CSS from Figma.
+- design.json: the exact design data exported by Figma (REST API format) — authoritative for any value index.html gets wrong.
+- images/: local image assets referenced by index.html.
+- references/: screenshot(s) of the selected Figma layer or frame.
+- README.md: package notes.
+
+Goal:
+Recreate the reference screenshot as a clean, production-ready HTML/CSS implementation.
+
+Rules:
+1. Use index.html as the source of truth for layout, dimensions, spacing, and asset paths.
+2. Keep local image paths exactly as provided. Do not replace images with remote URLs or placeholders.
+3. Compare the code against the screenshot(s) in references/ and improve visual accuracy.
+4. Use semantic HTML where obvious: buttons, inputs, nav, links, lists, forms, and headings.
+5. When index.html and the screenshot disagree, look up the exact value (colors, fonts, spacing, effects, variables) in design.json.
+6. Use pure HTML and CSS only unless I ask for a framework.
+7. Return the full final code, not a partial snippet.
+
+Package summary:
+- 42 exported image asset(s)
+- 15 reference screenshot(s)
