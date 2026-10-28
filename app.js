@@ -76,12 +76,12 @@ checkoutPage = () => {
 };
 
 const builderParts = [
-  { name: 'Carbon Fiber Body', price: 12.99, image: 'images/image_7_270x160.png' },
-  { name: 'Polycarbonate Clear', price: 9.50, image: 'images/pen_4x3_white_padded_1_270x200.png' },
-  { name: 'Aluminum Pro', price: 14, image: 'images/Buster_CYL_1_270x202.png' },
-  { name: 'Bamboo Natural', price: 11.20, image: 'images/image_5_270x160.png' },
-  { name: 'Titanium Elite', price: 18.50, image: 'images/image_6_270x160.png' },
-  { name: 'Acrylic Glow', price: 13.25, image: 'images/image_4_270x160.png' }
+  { name: 'Pentel Color Twin Barrel', price: 100.00, image: 'images/image_7_270x160.png' },
+  { name: 'Buster CYL', price: 950.00, image: 'images/pen_4x3_white_padded_1_270x200.png' },
+  { name: 'Ivan Mod', price: 700.00, image: 'images/Buster_CYL_1_270x202.png' },
+  { name: 'Dong-A Comssa Marker Caps', price: 65.00, image: 'images/image_5_270x160.png' },
+  { name: 'Pilot Dr. Grips Tips', price: 130.00, image: 'images/image_6_270x160.png' },
+  { name: 'Pilot Dr. Grips', price: 150.00, image: 'images/image_4_270x160.png' }
 ];
 
 builderPage = () => {
