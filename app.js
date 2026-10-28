@@ -3,9 +3,9 @@ const products = [
   { id: 'ivan', name: 'Ivan Mod', price: 700, size: 'Length: 21cm / Weight: 20g', badge: 'Heavy-weight', image: 'images/pen_4x3_white_padded_1_270x200.png' },
   { id: 'buster', name: 'Buster CYL', price: 950, size: 'Length: 21.5cm / Weight: 22g', badge: 'Pro choice', image: 'images/Buster_CYL_1_270x202.png' },
   { id: 'menowa', name: 'Menowa* VGG', price: 1200, size: 'Length: 22.2cm / Weight: 18.5g', badge: 'Elite', image: 'images/ee5ce842-6105-44d9-ad7d-2df0a1286c92_1_266x198.png' },
-  { id: 'grips', name: 'Premium Grip Set', price: 150, size: 'Elite silicone pack', badge: 'Custom', image: 'images/image_4_270x160.png' },
-  { id: 'tips', name: 'Titanium Tips', price: 130, size: 'Momentum tuned core tips', badge: 'Metal', image: 'images/image_6_270x160.png' },
-  { id: 'body', name: 'Carbon Body', price: 100, size: 'High friction matte finish', badge: 'New', image: 'images/image_7_270x160.png' }
+  { id: 'grips', name: 'Pilot Dr. Grips', price: 150, size: 'Dr. Grip grips from Pilot with various colors', badge: 'Grips', image: 'images/image_4_270x160.png' },
+  { id: 'tips', name: 'Pilot Dr. Grips Tips', price: 130, size: 'Dr. Grips Tips from Pilot', badge: 'Tips', image: 'images/image_6_270x160.png' },
+  { id: 'body', name: 'Pentel Color Twin Barrel', price: 100, size: 'Color Twin Barrel from Pentel', badge: 'Barrels', image: 'images/image_7_270x160.png' }
 ];
 const state = { cart: [], favorites: [], view: 'home', user: null, searchQuery: '', builder: { name: 'Carbon Fiber Body', price: 12.99, image: 'images/image_7_270x160.png' }, payment: 'GCash' };
 const credentials = { User8999: { password: 'pendace-user-2026', role: 'user' }, Admin8999: { password: 'pendace-admin-2026', role: 'admin' } };
