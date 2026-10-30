@@ -16,7 +16,7 @@ const money = value => `₱${Number(value).toLocaleString('en-PH', { minimumFrac
 
 function productCard(product, compact = false) {
   const saved = state.favorites.includes(product.id);
-  return `<article class="product-card"><span class="badge">${product.badge}</span><button class="favorite-button ${saved ? 'is-favorite' : ''}" data-favorite="${product.id}" aria-label="${saved ? 'Remove' : 'Add'} ${product.name} from favorites">${saved ? '♥' : '♡'}</button><img src="${product.image}" alt="${product.name}" /><div class="card-content"><div class="rating">★★★★★ <span>4.9/5</span></div><h3>${product.name}</h3><p>${product.size}</p><div class="product-bottom"><strong>${money(product.price)}</strong><button class="add-button" data-add="${product.id}" aria-label="Add ${product.name}">+</button></div></div></article>`;
+  return `<article class="product-card" data-product-card="${product.id}" tabindex="0"><span class="badge">${product.badge}</span><button class="favorite-button ${saved ? 'is-favorite' : ''}" data-favorite="${product.id}" aria-label="${saved ? 'Remove' : 'Add'} ${product.name} from favorites">${saved ? '♥' : '♡'}</button><img src="${product.image}" alt="${product.name}" /><div class="card-content"><div class="rating">★★★★★ <span>4.9/5</span></div><h3>${product.name}</h3><p>${product.size}</p><div class="product-bottom"><strong>${money(product.price)}</strong><button class="add-button" data-add="${product.id}" aria-label="Add ${product.name}">+</button></div></div></article>`;
 }
 function pageHead(title, crumb = 'Home') { return `<div class="breadcrumbs"><button data-view="home">Home</button> › ${crumb}</div><h1 class="page-title">${title}</h1>`; }
 function homePage() {
@@ -25,10 +25,10 @@ function homePage() {
 function shopPage() {
   return `<div class="page">${pageHead('Shop', 'Shop')}<div class="shop-layout"><aside class="filters"><div><h3>Categories</h3><div class="filter-list">${['Pen Mods','Grips','Tips','Bodies','Caps','Accessories'].map((name,i)=>`<label><input type="checkbox" ${i===0?'checked':''} /> ${name}</label>`).join('')}</div></div><hr class="filter-rule" /><div><h3>Price range</h3><div class="filter-list"><label>Min <input value="₱0" /></label><label>Max <input value="₱2,500" /></label></div></div><hr class="filter-rule" /><div><h3>Skill level</h3><div class="filter-list"><label><input type="radio" name="skill" /> Beginner</label><label><input type="radio" name="skill" checked /> Intermediate</label><label><input type="radio" name="skill" /> Advanced</label></div></div></aside><section><div class="catalog-toolbar"><span>Showing <b>24</b> products &nbsp; | &nbsp; Sort by: Most Popular</span><input id="catalog-search" placeholder="Find pen mods..." /></div><div id="catalog-grid" class="catalog-grid">${[...products,...products.slice(0,2)].map(productCard).join('')}</div></section></div></div>`;
 }
-function builderPage() {
+builderPage = () => {
   const choices = [['Carbon Fiber Body',12.99],['Polycarbonate Clear',9.50],['Aluminum Pro',14],['Bamboo Natural',11.20],['Titanium Elite',18.50],['Acrylic Glow',13.25]];
   return `<div class="page">${pageHead('Build Your Custom Pen Mod','Pen Mod Builder')}<p class="page-subtitle">Design your perfect spinner from premium components.</p><div class="steps"><span>● Step 1<b>Select Body</b></span><span>—</span><span>2 Step 2<b>Grip Options</b></span><span>—</span><span>3 Step 3<b>Tips Material</b></span><span>—</span><span>4 Step 4<b>Caps & Extras</b></span></div><div class="builder-layout"><section><p class="eyebrow">● Select Body Component</p><div class="choice-grid">${choices.map(([name,price], index)=>`<article class="choice ${state.builder.name===name?'selected':''}"><div class="blank-img"></div><strong>${name}</strong><small>${money(price)}</small><button data-component="${index}">${state.builder.name===name?'Selected':'Select'}</button></article>`).join('')}</div></section><aside class="checkout-card"><h3>Your Custom Mod</h3><div class="summary-preview">MOD PREVIEW</div><div class="summary-lines"><div><span>Body:</span><b>${state.builder.name}</b></div><div><span>Grip:</span><em>(Not selected)</em></div><div><span>Tips:</span><em>(Not selected)</em></div><div><span>Caps:</span><em>(Not selected)</em></div></div><div class="summary-total"><span>Estimated Total</span><b>${money(state.builder.price)}</b></div><button class="btn cyan" data-add-custom>Add custom mod to cart</button><button class="btn small" data-reset-builder>Reset build</button></aside></div></div>`;
-}
+};
 function cartPage() {
   const total = state.cart.reduce((sum, item) => sum + item.price, 0);
   const rows = state.cart.map((item, index) => {
@@ -60,7 +60,7 @@ function orderDetailPage() {
   const detail = `<button class="btn small" data-admin="orders">← Back to orders</button><h2>Order #PEN-1024</h2><div class="order-details"><div class="detail-stack"><section class="admin-card"><h2>Customer Information</h2><div class="summary-lines"><div><span>Name</span><b>Gabriel Santos</b></div><div><span>Email</span><b>gabriel@email.com</b></div><div><span>Phone</span><b>+63 912 345 6789</b></div></div></section><section class="admin-card"><h2>Delivery Information</h2><p>123 Spin Street, Quezon City, Philippines 1100</p><p class="cyan">PH-TRACK-78901</p></section></div><div class="detail-stack"><section class="admin-card"><h2>Order Timeline</h2><p class="cyan">◉ Pending</p><p class="cyan">┃ Processing</p><p>○ Shipped</p><p>○ Delivered</p></section><section class="admin-card"><h2>Payment Information</h2><p>GCash</p><b class="green">Paid</b></section></div></div><section class="admin-card" style="margin-top:14px"><h2>Ordered Products</h2>${adminTable()}</section>`;
   return adminShell('orders').replace(/<div class="admin-welcome">[\s\S]*?<\/div>[\s\S]*?<\/main>/, `${detail}</main>`);
 }
-function render(view=state.view) { state.view=view; const isAdmin=view.startsWith('admin')||view==='order-detail'; header.hidden=isAdmin; footer.hidden=isAdmin; const pages={home:homePage,shop:shopPage,builder:builderPage,cart:cartPage,checkout:checkoutPage,confirmation:confirmationPage,profile:profilePage,login:loginPage,signup:signupPage,about:aboutPage,'admin-dashboard':()=>adminShell('dashboard'),'admin-orders':()=>adminShell('orders'),'admin-sales':()=>adminShell('sales'),'admin-products':()=>adminShell('products'),'order-detail':orderDetailPage}; app.innerHTML=(pages[view]||homePage)(); updateNav(); window.scrollTo({top:0,behavior:'instant'}); app.focus(); }
+function render(view=state.view) { state.view=view; const isAdmin=view.startsWith('admin')||view==='order-detail'; header.hidden=isAdmin; footer.hidden=isAdmin; const pages={home:homePage,shop:shopPage,builder:builderPage,cart:cartPage,checkout:checkoutPage,confirmation:confirmationPage,profile:profilePage,login:loginPage,signup:signupPage,about:aboutPage,favorites:favoritesPage,'admin-dashboard':()=>adminShell('dashboard'),'admin-orders':()=>adminShell('orders'),'admin-sales':()=>adminShell('sales'),'admin-products':()=>adminShell('products'),'order-detail':orderDetailPage}; app.innerHTML=(pages[view]||homePage)(); updateNav(); window.scrollTo({top:0,behavior:'instant'}); app.focus(); }
 function updateNav(){document.querySelector('#cart-count').textContent=state.cart.length;document.querySelectorAll('.store-nav [data-view]').forEach(button=>button.classList.toggle('active',button.dataset.view===state.view));}
 function addToCart(id){const item=products.find(product=>product.id===id);if(item){state.cart.push(item);updateNav();showToast(`${item.name} added to cart.`)}}
 function showToast(message){const toast=document.querySelector('#toast');toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)}
@@ -86,7 +86,7 @@ const builderParts = [
 
 builderPage = () => {
   const selected = builderParts.find(part => part.name === state.builder.name) || builderParts[0];
-  const cards = builderParts.map((part, index) => `<article class="choice ${selected.name === part.name ? 'selected' : ''}"><div class="blank-img"><img src="${part.image}" alt="${part.name}" /></div><strong>${part.name}</strong><small>${money(part.price)}</small><button data-component="${index}">${selected.name === part.name ? 'Selected' : 'Select'}</button></article>`).join('');
+  const cards = builderParts.map((part, index) => `<article class="choice ${selected.name === part.name ? 'selected' : ''}" data-component="${index}" tabindex="0"><div class="blank-img"><img src="${part.image}" alt="${part.name}" /></div><strong>${part.name}</strong><small>${money(part.price)}</small><button data-component="${index}">${selected.name === part.name ? 'Selected' : 'Select'}</button></article>`).join('');
   return `<div class="page">${pageHead('Build Your Custom Pen Mod','Pen Mod Builder')}<p class="page-subtitle">Design your perfect spinner from premium components.</p><div class="steps"><span>● Step 1<b>Select Body</b></span><span>—</span><span>2 Step 2<b>Grip Options</b></span><span>—</span><span>3 Step 3<b>Tips Material</b></span><span>—</span><span>4 Step 4<b>Caps & Extras</b></span></div><div class="builder-layout"><section><p class="eyebrow">● Select Body Component</p><div class="choice-grid">${cards}</div></section><aside class="checkout-card"><h3>Your Custom Mod</h3><div class="summary-preview"><img src="${selected.image}" alt="${selected.name} preview" /></div><div class="summary-lines"><div><span>Body:</span><b>${selected.name}</b></div><div><span>Grip:</span><em>(Not selected)</em></div><div><span>Tips:</span><em>(Not selected)</em></div><div><span>Caps:</span><em>(Not selected)</em></div></div><div class="summary-total"><span>Estimated Total</span><b>${money(selected.price)}</b></div><button class="btn cyan builder-action-primary" data-add-custom>Add custom mod to cart</button><button class="btn builder-action-secondary" data-reset-builder>Reset build</button></aside></div></div>`;
 };
 
@@ -109,6 +109,7 @@ document.addEventListener('click', event => {
   const favorite = event.target.closest('[data-favorite]');
   if (favorite) {
     event.stopImmediatePropagation();
+    if (!state.user) { requireSignIn('Sign in to save favorites.'); return; }
     const id = favorite.dataset.favorite;
     state.favorites = state.favorites.includes(id) ? state.favorites.filter(item => item !== id) : [...state.favorites, id];
     showToast(state.favorites.includes(id) ? 'Saved to favorites.' : 'Removed from favorites.');
@@ -137,6 +138,7 @@ document.addEventListener('click', event => {
   const favorites = event.target.closest('[data-view="favorites"]');
   if (favorites) {
     event.stopImmediatePropagation();
+    if (!state.user) { showToast('Sign in to view your favorites.'); render('login'); return; }
     state.view = 'favorites';
     header.hidden = false;
     footer.hidden = false;
@@ -156,5 +158,261 @@ document.querySelector('#global-search').addEventListener('submit', event => {
     search.dispatchEvent(new Event('input', { bubbles: true }));
   }
 });
+
+function getTemporaryAccounts() {
+  try { return JSON.parse(sessionStorage.getItem('pendaceTemporaryAccounts') || '{}'); }
+  catch { return {}; }
+}
+
+function saveTemporaryAccounts(accounts) {
+  sessionStorage.setItem('pendaceTemporaryAccounts', JSON.stringify(accounts));
+}
+
+loginPage = () => `<section class="login-page"><div class="login-box"><div class="avatar">P</div><p class="eyebrow">Secure account access</p><h1>Welcome back.</h1><p>Sign in to access your Pendace account.</p><form id="login-form"><label>Username<input name="username" autocomplete="username" required /></label><label>Password<input name="password" type="password" autocomplete="current-password" required /></label><p id="login-error" class="login-error"></p><button class="btn dark" type="submit">Sign in →</button></form><p>New to Pendace? <button class="text-action" data-view="signup">Create an account</button></p></div></section>`;
+
+signupPage = () => `<section class="login-page"><div class="login-box"><p class="eyebrow">Create your account</p><h1>Join Pendace.</h1><p>Create a temporary prototype account to access the shop’s member features.</p><form id="signup-form" class="signup-form"><div class="form-row"><label>First name<input name="firstName" autocomplete="given-name" required /></label><label>Last name<input name="lastName" autocomplete="family-name" required /></label></div><label>Username<input name="username" autocomplete="username" minlength="3" required /></label><label>Email address<input name="email" type="email" autocomplete="email" required /></label><label>Password<input name="password" type="password" autocomplete="new-password" minlength="6" required /></label><label>Confirm password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required /></label><p id="signup-error" class="form-error"></p><button class="btn dark" type="submit">Create account</button></form><p class="auth-note">Your details stay in this browser session for this prototype and are used to validate your sign-in.</p><p>Already registered? <button class="text-action" data-view="login">Back to sign in</button></p></div></section>`;
+
+function requireSignIn(message = 'Sign in to use this feature.') {
+  if (state.user) return false;
+  showToast(message);
+  render('login');
+  return true;
+}
+
+function selectBuilderPart(index) {
+  const part = builderParts[index];
+  if (!part) return;
+  state.builder = { ...part };
+  render('builder');
+  showToast('Product Selected');
+  document.querySelector('#toast').classList.add('product-selected-toast');
+  setTimeout(() => document.querySelector('#toast').classList.remove('product-selected-toast'), 2300);
+}
+
+document.addEventListener('click', event => {
+  const restrictedView = event.target.closest('[data-view]')?.dataset.view;
+  if (['cart', 'favorites', 'checkout', 'profile'].includes(restrictedView) && requireSignIn('Sign in to access this area.')) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
+  if (event.target.closest('[data-add], [data-add-custom]') && requireSignIn('Sign in to add items to your cart.')) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
+  const favorite = event.target.closest('[data-favorite]');
+  if (favorite && !state.user) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    requireSignIn('Sign in to save favorites.');
+    return;
+  }
+  const component = event.target.closest('[data-component]');
+  if (component) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    selectBuilderPart(Number(component.dataset.component));
+    return;
+  }
+  const card = event.target.closest('[data-product-card]');
+  if (card && !event.target.closest('button')) {
+    const product = products.find(item => item.id === card.dataset.productCard);
+    if (product) showToast(`${product.name} selected — use + to add it to your cart.`);
+  }
+}, true);
+
+document.addEventListener('keydown', event => {
+  if (!['Enter', ' '].includes(event.key)) return;
+  const choice = event.target.closest('.choice[data-component]');
+  if (!choice) return;
+  event.preventDefault();
+  selectBuilderPart(Number(choice.dataset.component));
+});
+
+document.addEventListener('submit', event => {
+  if (event.target.id === 'signup-form') {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const form = new FormData(event.target);
+    const username = form.get('username').trim();
+    const password = form.get('password');
+    const error = document.querySelector('#signup-error');
+    const accounts = getTemporaryAccounts();
+    if (credentials[username] || accounts[username]) { error.textContent = 'That username is already taken.'; return; }
+    if (password !== form.get('confirmPassword')) { error.textContent = 'Passwords do not match.'; return; }
+    accounts[username] = { password, role: 'user', firstName: form.get('firstName').trim(), lastName: form.get('lastName').trim(), email: form.get('email').trim() };
+    saveTemporaryAccounts(accounts);
+    showToast('Account created. Please sign in.');
+    render('login');
+    return;
+  }
+  if (event.target.id === 'login-form') {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const form = new FormData(event.target);
+    const username = form.get('username').trim();
+    const account = getTemporaryAccounts()[username] || credentials[username];
+    if (!account || account.password !== form.get('password')) { document.querySelector('#login-error').textContent = 'The username or password is incorrect.'; return; }
+    state.user = { username, role: account.role, ...account };
+    render(account.role === 'admin' ? 'admin-dashboard' : 'profile');
+  }
+}, true);
+
+Object.assign(state, {
+  shopFilters: { categories: [], min: 0, max: 2500, skill: 'all', sort: 'popular', query: '' },
+  savedMods: [],
+  settings: { darkMode: false, notifications: true, privacy: true }
+});
+
+Object.assign(products[0], { category: 'Pen Mods', skill: 'Intermediate', popularity: 98 });
+Object.assign(products[1], { category: 'Pen Mods', skill: 'Beginner', popularity: 85 });
+Object.assign(products[2], { category: 'Pen Mods', skill: 'Advanced', popularity: 92 });
+Object.assign(products[3], { category: 'Pen Mods', skill: 'Advanced', popularity: 89 });
+Object.assign(products[4], { category: 'Grips', skill: 'Beginner', popularity: 82 });
+Object.assign(products[5], { category: 'Tips', skill: 'Intermediate', popularity: 80 });
+Object.assign(products[6], { category: 'Bodies', skill: 'Intermediate', popularity: 77 });
+products.push(
+  { id: 'comssa-caps', name: 'Comssa Caps', price: 65, size: '14 colors · Dong-A Comssa marker caps', badge: 'New', image: 'images/image_5_270x160.png', category: 'Caps', skill: 'Beginner', popularity: 74 },
+  { id: 'practice-kit', name: 'Spinner Practice Kit', price: 250, size: 'Parts case and practice guide', badge: 'Starter', image: 'images/ee5ce842-6105-44d9-ad7d-2df0a1286c92_1_266x198.png', category: 'Accessories', skill: 'Beginner', popularity: 70 }
+);
+
+const builderInventory = {
+  bodies: [
+    { id: 'colortwin', name: 'Pentel Color Twin Barrel', price: 100, image: 'images/image_7_270x160.png' },
+    { id: 'polycarbonate', name: 'Polycarbonate Clear', price: 95, image: 'images/pen_4x3_white_padded_1_270x200.png' },
+    { id: 'aluminum', name: 'Aluminum Pro Body', price: 180, image: 'images/Buster_CYL_1_270x202.png' }
+  ],
+  grips: [
+    { id: 'drgrip', name: 'Colored Dr. Grip Set', price: 150, image: 'images/image_4_270x160.png' },
+    { id: 'hybrid', name: 'Hybrid Gel Grip', price: 90, image: 'images/image_4_270x160.png' }
+  ],
+  tips: [
+    { id: 'pilot-tip', name: 'Pilot Dr. Grip Tips', price: 130, image: 'images/image_6_270x160.png' },
+    { id: 'signo-tip', name: 'Signo Broad Tips', price: 100, image: 'images/image_6_270x160.png' }
+  ],
+  caps: [
+    { id: 'comssa', name: 'Dong-A Comssa Caps', price: 65, image: 'images/image_5_270x160.png' },
+    { id: 'weighted-cap', name: 'Weighted Competition Caps', price: 120, image: 'images/image_5_270x160.png' }
+  ],
+  prebuilt: [
+    { id: 'waterfall-build', name: 'Waterfall Mod', price: 1400, image: 'images/WATERFALL_MOD_1_270x200.png', components: ['Polycarbonate Clear body', 'Colored Dr. Grip Set', 'Signo Broad Tips', 'Weighted Competition Caps'] },
+    { id: 'buster-build', name: 'Buster CYL', price: 950, image: 'images/Buster_CYL_1_270x202.png', components: ['Aluminum Pro Body', 'Hybrid Gel Grip', 'Pilot Dr. Grip Tips', 'Dong-A Comssa Caps'] }
+  ]
+};
+
+state.builder = { section: 'bodies', body: null, grip: null, tips: null, caps: null, special: null };
+
+function builderTotal() {
+  if (state.builder.special) return state.builder.special.price;
+  return ['body', 'grip', 'tips', 'caps'].reduce((total, key) => total + (state.builder[key]?.price || 0), 0);
+}
+
+function builderPreview() {
+  return state.builder.special || state.builder.body || state.builder.grip || state.builder.tips || state.builder.caps;
+}
+
+function selectBuilderItem(section, id) {
+  const item = builderInventory[section]?.find(part => part.id === id);
+  if (!item) return;
+  if (section === 'prebuilt') {
+    const [body, grip, tips, caps] = item.components;
+    state.builder = { ...state.builder, special: item, body: { name: body }, grip: { name: grip }, tips: { name: tips }, caps: { name: caps } };
+  } else {
+    const key = section === 'bodies' ? 'body' : section;
+    state.builder = { ...state.builder, [key]: item, special: null };
+  }
+  render('builder');
+  showToast('Product Selected');
+  document.querySelector('#toast').classList.add('product-selected-toast');
+  setTimeout(() => document.querySelector('#toast').classList.remove('product-selected-toast'), 2300);
+}
+
+builderPage = () => {
+  const section = state.builder.section;
+  const sectionTitle = { bodies: 'Select Body Component', grips: 'Select Grip Options', tips: 'Select Tips Material', caps: 'Select Caps & Extras', prebuilt: 'Select a Pre-Built Mod' };
+  const preview = builderPreview();
+  const activeItems = builderInventory[section];
+  const selectedItem = section === 'prebuilt' ? state.builder.special : state.builder[section === 'bodies' ? 'body' : section];
+  const cards = activeItems.map(item => `<article class="choice ${selectedItem?.id === item.id ? 'selected' : ''}" data-builder-select="${section}:${item.id}" tabindex="0"><div class="blank-img"><img src="${item.image}" alt="${item.name}" /></div><strong>${item.name}</strong><small>${money(item.price)}</small><button data-builder-select="${section}:${item.id}">${selectedItem?.id === item.id ? 'Selected' : 'Select'}</button></article>`).join('');
+  const value = item => item?.name || '(Not selected)';
+  const special = state.builder.special ? `<div class="builder-special"><h4>Special Parts</h4><ul>${state.builder.special.components.map(component => `<li>${component}</li>`).join('')}</ul></div>` : '';
+  return `<div class="page">${pageHead('Build Your Custom Pen Mod','Pen Mod Builder')}<p class="page-subtitle">Design your perfect spinner from premium components.</p><div class="steps"><span>● Step 1<b>Select Body</b></span><span>—</span><span>2 Step 2<b>Grip Options</b></span><span>—</span><span>3 Step 3<b>Tips Material</b></span><span>—</span><span>4 Step 4<b>Caps & Extras</b></span></div><div class="builder-layout"><section><div class="builder-category-bar">${[['bodies','Body'],['grips','Grips'],['tips','Tips'],['caps','Caps'],['prebuilt','Pre-Built Mods']].map(([key,label]) => `<button class="${section === key ? 'active' : ''}" data-builder-section="${key}">${label}</button>`).join('')}</div><p class="eyebrow">● ${sectionTitle[section]}</p><p class="builder-help">Select a component to add it to your custom mod.</p><div class="choice-grid">${cards}</div></section><aside class="checkout-card"><h3>Your Custom Mod</h3><div class="summary-preview">${preview ? `<img src="${preview.image}" alt="${preview.name} preview" />` : 'MOD PREVIEW'}</div><div class="summary-lines"><div><span>Body:</span><b>${value(state.builder.body)}</b></div><div><span>Grip:</span><em>${value(state.builder.grip)}</em></div><div><span>Tips:</span><em>${value(state.builder.tips)}</em></div><div><span>Caps:</span><em>${value(state.builder.caps)}</em></div></div>${special}<div class="summary-total"><span>Estimated Total</span><b>${money(builderTotal())}</b></div><div class="builder-actions"><button class="btn cyan builder-action-primary" data-builder-action="cart">Add custom mod to cart</button><button class="btn" data-builder-action="save">Save mod</button><button class="btn builder-action-secondary" data-builder-action="reset">Reset build</button></div></aside></div></div>`;
+};
+
+function shopPage() {
+  const filter = state.shopFilters;
+  const categoryOptions = ['Pen Mods', 'Grips', 'Tips', 'Bodies', 'Caps', 'Accessories'];
+  return `<div class="page">${pageHead('Shop', 'Shop')}<div class="shop-layout"><aside class="filters"><div><h3>Categories</h3><div class="filter-list">${categoryOptions.map(category => `<label><input type="checkbox" data-filter-category="${category}" ${filter.categories.includes(category) ? 'checked' : ''} /> ${category}</label>`).join('')}</div></div><hr class="filter-rule" /><div><h3>Price range</h3><div class="filter-list"><label>Min <input type="number" min="0" data-filter-min value="${filter.min}" /></label><label>Max <input type="number" min="0" data-filter-max value="${filter.max}" /></label></div></div><hr class="filter-rule" /><div><h3>Skill level</h3><div class="filter-list">${['all','Beginner','Intermediate','Advanced'].map(level => `<label><input type="radio" name="skill" data-filter-skill="${level}" ${filter.skill === level ? 'checked' : ''} /> ${level === 'all' ? 'All levels' : level}</label>`).join('')}</div></div><div class="filter-actions"><button data-filter-reset>Reset</button><button class="apply" data-filter-apply>Apply</button></div></aside><section><div class="catalog-toolbar"><span class="filter-count" id="filter-count"></span><input id="catalog-search" value="${filter.query}" placeholder="Find pen mods..." /><select id="catalog-sort"><option value="popular" ${filter.sort === 'popular' ? 'selected' : ''}>Most Popular</option><option value="price-low" ${filter.sort === 'price-low' ? 'selected' : ''}>Price: Low to High</option><option value="price-high" ${filter.sort === 'price-high' ? 'selected' : ''}>Price: High to Low</option><option value="name" ${filter.sort === 'name' ? 'selected' : ''}>Name: A to Z</option></select></div><div id="catalog-grid" class="catalog-grid"></div></section></div></div>`;
+}
+
+function applyShopFilters() {
+  const grid = document.querySelector('#catalog-grid');
+  const count = document.querySelector('#filter-count');
+  if (!grid || !count) return;
+  const filter = state.shopFilters;
+  let result = products.filter(product => (!filter.categories.length || filter.categories.includes(product.category)) && product.price >= filter.min && product.price <= filter.max && (filter.skill === 'all' || product.skill === filter.skill) && product.name.toLowerCase().includes(filter.query.toLowerCase()));
+  result = [...result].sort((a, b) => filter.sort === 'price-low' ? a.price - b.price : filter.sort === 'price-high' ? b.price - a.price : filter.sort === 'name' ? a.name.localeCompare(b.name) : b.popularity - a.popularity);
+  count.textContent = `Showing ${result.length} product${result.length === 1 ? '' : 's'}`;
+  grid.innerHTML = result.length ? result.map(productCard).join('') : '<div class="empty">No products match the selected filters.<br /><button class="btn dark" data-filter-reset>Clear filters</button></div>';
+}
+
+profilePage = () => {
+  if (!state.user) return loginPage();
+  const section = state.accountSection || 'account';
+  const displayName = [state.user.firstName, state.user.lastName].filter(Boolean).join(' ') || state.user.username;
+  const email = state.user.email || `${state.user.username.toLowerCase()}@pendace.com`;
+  const navigation = [['account','Account Info'],['orders','Order History'],['wishlist','Wishlist'],['saved','Saved Mods'],['settings','Settings']];
+  let content = '';
+  if (section === 'account') content = `<div class="profile-block"><h2>Welcome back, ${displayName}!</h2><div class="form-grid"><div class="form-card"><h3>Personal Information</h3><div class="summary-lines"><div><span>Full name</span><b>${displayName}</b></div><div><span>Username</span><b>${state.user.username}</b></div><div><span>Email address</span><b>${email}</b></div></div></div><div class="form-card"><h3>Account Status</h3><div class="summary-lines"><div><span>Member type</span><b>Spinner</b></div><div><span>Saved favorites</span><b>${state.favorites.length}</b></div><div><span>Cart items</span><b>${state.cart.length}</b></div></div></div></div></div>`;
+  if (section === 'orders') content = `<div class="profile-block"><h2>Order History</h2><div class="empty">You have not placed an order yet.<br /><button class="btn dark" data-view="shop">Explore the shop</button></div></div>`;
+  if (section === 'wishlist') { const saved = products.filter(product => state.favorites.includes(product.id)); content = `<div class="profile-block"><h2>Wishlist</h2>${saved.length ? `<div class="product-grid">${saved.map(productCard).join('')}</div>` : '<div class="empty">Your wishlist is empty.<br /><button class="btn dark" data-view="shop">Explore the shop</button></div>'}</div>`; }
+  if (section === 'saved') content = `<div class="profile-block"><h2>Saved Mods</h2>${state.savedMods.length ? state.savedMods.map((mod, index) => `<article class="saved-mod"><div><b>${mod.name}</b><p>${mod.parts}</p></div><div><b>${money(mod.price)}</b><br /><button class="btn small" data-reorder-mod="${index}">Add to cart</button></div></article>`).join('') : '<div class="empty">Save a custom mod from the builder to keep it here.<br /><button class="btn dark" data-view="builder">Open builder</button></div>'}</div>`;
+  if (section === 'settings') content = `<div class="profile-block"><h2>Settings</h2><div class="settings-panel"><label class="settings-option"><span><h3>Dark Mode</h3><p>Use the darker Pendace interface.</p></span><input type="checkbox" data-setting="darkMode" ${state.settings.darkMode ? 'checked' : ''} /></label><label class="settings-option"><span><h3>Order Notifications</h3><p>Receive updates for orders and saved mods.</p></span><input type="checkbox" data-setting="notifications" ${state.settings.notifications ? 'checked' : ''} /></label><label class="settings-option"><span><h3>Private Profile</h3><p>Keep your account information private.</p></span><input type="checkbox" data-setting="privacy" ${state.settings.privacy ? 'checked' : ''} /></label><div class="settings-option"><span><h3>Account preferences</h3><p>Member account: ${state.user.username}</p></span><button class="btn small" data-account-signout>Sign out</button></div></div></div>`;
+  return `<div class="page">${pageHead('My Account','My Account')}<div class="profile-layout"><aside class="profile-menu"><div class="avatar">◎</div><h3>${displayName}</h3><p>${email}</p>${navigation.map(([key,label]) => `<button class="${section === key ? 'active' : ''}" data-account-section="${key}">${label}</button>`).join('')}</aside><section>${content}</section></div></div>`;
+};
+
+document.addEventListener('click', event => {
+  const section = event.target.closest('[data-builder-section]');
+  if (section) { event.preventDefault(); event.stopImmediatePropagation(); state.builder.section = section.dataset.builderSection; render('builder'); return; }
+  const selection = event.target.closest('[data-builder-select]');
+  if (selection) { event.preventDefault(); event.stopImmediatePropagation(); const [part, id] = selection.dataset.builderSelect.split(':'); selectBuilderItem(part, id); return; }
+  const action = event.target.closest('[data-builder-action]')?.dataset.builderAction;
+  if (action) {
+    event.preventDefault(); event.stopImmediatePropagation();
+    if (action === 'reset') { state.builder = { section: 'bodies', body: null, grip: null, tips: null, caps: null, special: null }; render('builder'); return; }
+    if (requireSignIn(action === 'save' ? 'Sign in to save a custom mod.' : 'Sign in to add a custom mod to your cart.')) return;
+    const preview = builderPreview();
+    if (!preview) { showToast('Select at least one part first.'); return; }
+    const parts = ['body','grip','tips','caps'].map(key => state.builder[key]?.name).filter(Boolean).join(' · ');
+    const mod = { name: state.builder.special ? state.builder.special.name : 'Custom Pen Mod', price: builderTotal(), image: preview.image, parts };
+    if (action === 'save') { state.savedMods.push(mod); showToast('Custom mod saved.'); render('profile'); }
+    else { state.cart.push(mod); updateNav(); showToast('Custom mod added to cart.'); render('cart'); }
+    return;
+  }
+  const accountSection = event.target.closest('[data-account-section]');
+  if (accountSection) { event.preventDefault(); event.stopImmediatePropagation(); state.accountSection = accountSection.dataset.accountSection; render('profile'); return; }
+  if (event.target.closest('[data-account-signout]')) { event.preventDefault(); event.stopImmediatePropagation(); state.user = null; state.accountSection = 'account'; showToast('You have been signed out.'); render('home'); return; }
+  const reorder = event.target.closest('[data-reorder-mod]');
+  if (reorder) { event.preventDefault(); event.stopImmediatePropagation(); const mod = state.savedMods[Number(reorder.dataset.reorderMod)]; if (mod) { state.cart.push(mod); updateNav(); showToast('Saved mod added to cart.'); } return; }
+  if (event.target.closest('[data-filter-apply]')) { event.preventDefault(); event.stopImmediatePropagation(); applyShopFilters(); return; }
+  if (event.target.closest('[data-filter-reset]')) { event.preventDefault(); event.stopImmediatePropagation(); state.shopFilters = { categories: [], min: 0, max: 2500, skill: 'all', sort: 'popular', query: '' }; render('shop'); applyShopFilters(); return; }
+}, true);
+
+document.addEventListener('change', event => {
+  if (event.target.matches('[data-filter-category]')) { const category = event.target.dataset.filterCategory; state.shopFilters.categories = event.target.checked ? [...new Set([...state.shopFilters.categories, category])] : state.shopFilters.categories.filter(item => item !== category); applyShopFilters(); }
+  if (event.target.matches('[data-filter-min]')) { state.shopFilters.min = Math.max(0, Number(event.target.value) || 0); applyShopFilters(); }
+  if (event.target.matches('[data-filter-max]')) { state.shopFilters.max = Math.max(state.shopFilters.min, Number(event.target.value) || 0); applyShopFilters(); }
+  if (event.target.matches('[data-filter-skill]')) { state.shopFilters.skill = event.target.dataset.filterSkill; applyShopFilters(); }
+  if (event.target.id === 'catalog-sort') { state.shopFilters.sort = event.target.value; applyShopFilters(); }
+  if (event.target.matches('[data-setting]')) { state.settings[event.target.dataset.setting] = event.target.checked; document.body.classList.toggle('dark-mode', state.settings.darkMode); }
+}, true);
+
+document.addEventListener('input', event => {
+  if (event.target.id === 'catalog-search') { event.stopImmediatePropagation(); state.shopFilters.query = event.target.value; applyShopFilters(); }
+}, true);
+
+const originalRender = render;
+render = view => { originalRender(view); if (state.view === 'shop') applyShopFilters(); document.body.classList.toggle('dark-mode', state.settings.darkMode); };
 
 render();
