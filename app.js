@@ -71,8 +71,8 @@ document.querySelector('#mobile-menu').addEventListener('click',event=>{const na
 checkoutPage = () => {
   const total = state.cart.reduce((sum, item) => sum + item.price, 0);
   const items = state.cart.map(item => `<div class="receipt-row"><span>${item.name}<br /><small>Qty: 1</small></span><b>${money(item.price)}</b></div>`).join('');
-  const field = (label, wide = false) => `<label class="${wide ? 'wide' : ''}">${label}<input /></label>`;
-  return `<div class="page">${pageHead('Checkout','Cart / Checkout')}<div class="checkout-layout"><div><section class="form-card"><h2>┃ Delivery Information</h2><div class="form-grid">${field('First name')}${field('Last name')}${field('Email protocol')}${field('Rotational dispatch phone')}${field('Tactical address line 1', true)}${field('Tactical address line 2', true)}${field('City')}${field('Province / state')}${field('Postal code')}${field('Country dropdown')}</div></section><section class="form-card" style="margin-top:14px"><h2>┃ Payment Method</h2><div class="payment-options">${['GCash','Maya','Cash on Delivery'].map(name => `<button class="payment ${state.payment === name ? 'selected' : ''}" data-payment="${name}">${name}</button>`).join('')}</div></section></div><aside class="cart-summary"><h3>┃ Order Summary</h3>${items}<div class="summary-total"><span>Total Allocation</span><b>${money(total)}</b></div><button class="btn cyan" data-place-order>Place order</button></aside></div></div>`;
+  const field = (label, name, type = 'text', wide = false) => `<label class="${wide ? 'wide' : ''}">${label}<input name="${name}" type="${type}" required /></label>`;
+  return `<div class="page">${pageHead('Checkout','Cart / Checkout')}<form id="checkout-form"><div class="checkout-layout"><div><section class="form-card"><h2>┃ Delivery Information</h2><div class="form-grid">${field('First name', 'firstName')}${field('Last name', 'lastName')}${field('Email address', 'email', 'email')}${field('Phone number', 'phone', 'tel')}${field('Address line 1', 'address1', 'text', true)}${field('Address line 2', 'address2', 'text', true)}${field('City', 'city')}${field('Province / state', 'province')}${field('Postal code', 'postal')}${field('Country', 'country')}</div><p id="checkout-error" class="checkout-error" aria-live="polite"></p></section><section class="form-card" style="margin-top:14px"><h2>┃ Payment Method</h2><div class="payment-options">${['GCash','Maya','Cash on Delivery'].map(name => `<button type="button" class="payment ${state.payment === name ? 'selected' : ''}" data-payment="${name}">${name}</button>`).join('')}</div></section></div><aside class="cart-summary"><h3>┃ Order Summary</h3>${items}<div class="summary-total"><span>Total Allocation</span><b>${money(total)}</b></div><button type="button" class="btn cyan" data-place-order>Place order</button></aside></div></form></div>`;
 };
 
 const builderParts = [
@@ -262,6 +262,7 @@ document.addEventListener('submit', event => {
 Object.assign(state, {
   shopFilters: { categories: [], min: 0, max: 2500, skill: 'all', sort: 'popular', query: '' },
   savedMods: [],
+  orders: [],
   settings: { darkMode: false, notifications: true, privacy: true }
 });
 
@@ -280,24 +281,32 @@ products.push(
 const builderInventory = {
   bodies: [
     { id: 'colortwin', name: 'Pentel Color Twin Barrel', price: 100, image: 'images/image_7_270x160.png' },
-    { id: 'polycarbonate', name: 'Polycarbonate Clear', price: 95, image: 'images/pen_4x3_white_padded_1_270x200.png' },
-    { id: 'aluminum', name: 'Aluminum Pro Body', price: 180, image: 'images/Buster_CYL_1_270x202.png' }
+    { id: 'polycarbonate', name: 'Clear Polycarbonate Barrel', price: 95, image: 'images/pen_4x3_white_padded_1_270x200.png' },
+    { id: 'aluminum', name: 'Machined Aluminum Barrel', price: 180, image: 'images/Buster_CYL_1_270x202.png' },
+    { id: 'carbon', name: 'Carbon Fiber Barrel', price: 160, image: 'images/image_7_270x160.png' }
   ],
   grips: [
-    { id: 'drgrip', name: 'Colored Dr. Grip Set', price: 150, image: 'images/image_4_270x160.png' },
-    { id: 'hybrid', name: 'Hybrid Gel Grip', price: 90, image: 'images/image_4_270x160.png' }
+    { id: 'pilot-grip', name: 'Pilot Dr. Grip Silicone Set', price: 150, image: 'images/image_4_270x160.png' },
+    { id: 'hybrid-grip', name: 'Hybrid Gel Grip Pair', price: 90, image: 'images/image_4_270x160.png' },
+    { id: 'comssa-grip', name: 'Comssa Soft Grip Set', price: 80, image: 'images/image_4_270x160.png' },
+    { id: 'clear-grip', name: 'Clear Ring Grip Pair', price: 70, image: 'images/image_4_270x160.png' }
   ],
   tips: [
-    { id: 'pilot-tip', name: 'Pilot Dr. Grip Tips', price: 130, image: 'images/image_6_270x160.png' },
-    { id: 'signo-tip', name: 'Signo Broad Tips', price: 100, image: 'images/image_6_270x160.png' }
+    { id: 'pilot-tip', name: 'Pilot Dr. Grip Metal Tips', price: 130, image: 'images/image_6_270x160.png' },
+    { id: 'signo-tip', name: 'Signo Broad Metal Tips', price: 100, image: 'images/image_6_270x160.png' },
+    { id: 'hgg-tip', name: 'HGG Precision Tip Pair', price: 110, image: 'images/image_6_270x160.png' },
+    { id: 'steel-tip', name: 'Stainless Balance Tip Set', price: 160, image: 'images/image_6_270x160.png' }
   ],
   caps: [
-    { id: 'comssa', name: 'Dong-A Comssa Caps', price: 65, image: 'images/image_5_270x160.png' },
-    { id: 'weighted-cap', name: 'Weighted Competition Caps', price: 120, image: 'images/image_5_270x160.png' }
+    { id: 'comssa', name: 'Dong-A Comssa Marker Caps', price: 65, image: 'images/image_5_270x160.png' },
+    { id: 'weighted-cap', name: 'Weighted Balance Cap Set', price: 120, image: 'images/image_5_270x160.png' },
+    { id: 'sailor-cap', name: 'Sailor Fine Cap Pair', price: 75, image: 'images/image_5_270x160.png' },
+    { id: 'metal-cap', name: 'Metal End Cap Pair', price: 140, image: 'images/image_5_270x160.png' }
   ],
   prebuilt: [
-    { id: 'waterfall-build', name: 'Waterfall Mod', price: 1400, image: 'images/WATERFALL_MOD_1_270x200.png', components: ['Polycarbonate Clear body', 'Colored Dr. Grip Set', 'Signo Broad Tips', 'Weighted Competition Caps'] },
-    { id: 'buster-build', name: 'Buster CYL', price: 950, image: 'images/Buster_CYL_1_270x202.png', components: ['Aluminum Pro Body', 'Hybrid Gel Grip', 'Pilot Dr. Grip Tips', 'Dong-A Comssa Caps'] }
+    { id: 'waterfall-build', name: 'Waterfall Mod', price: 1400, image: 'images/WATERFALL_MOD_1_270x200.png', components: ['Clear Polycarbonate Barrel', 'Pilot Dr. Grip Silicone Set', 'Signo Broad Metal Tips', 'Weighted Balance Cap Set'] },
+    { id: 'buster-build', name: 'Buster CYL', price: 950, image: 'images/Buster_CYL_1_270x202.png', components: ['Machined Aluminum Barrel', 'Hybrid Gel Grip Pair', 'Pilot Dr. Grip Metal Tips', 'Dong-A Comssa Marker Caps'] },
+    { id: 'menowa-build', name: 'Menowa* VGG', price: 1200, image: 'images/ee5ce842-6105-44d9-ad7d-2df0a1286c92_1_266x198.png', components: ['Carbon Fiber Barrel', 'Comssa Soft Grip Set', 'HGG Precision Tip Pair', 'Sailor Fine Cap Pair'] }
   ]
 };
 
@@ -319,7 +328,7 @@ function selectBuilderItem(section, id) {
     const [body, grip, tips, caps] = item.components;
     state.builder = { ...state.builder, special: item, body: { name: body }, grip: { name: grip }, tips: { name: tips }, caps: { name: caps } };
   } else {
-    const key = section === 'bodies' ? 'body' : section;
+    const key = section === 'bodies' ? 'body' : section === 'grips' ? 'grip' : section;
     state.builder = { ...state.builder, [key]: item, special: null };
   }
   render('builder');
@@ -365,7 +374,7 @@ profilePage = () => {
   const navigation = [['account','Account Info'],['orders','Order History'],['wishlist','Wishlist'],['saved','Saved Mods'],['settings','Settings']];
   let content = '';
   if (section === 'account') content = `<div class="profile-block"><h2>Welcome back, ${displayName}!</h2><div class="form-grid"><div class="form-card"><h3>Personal Information</h3><div class="summary-lines"><div><span>Full name</span><b>${displayName}</b></div><div><span>Username</span><b>${state.user.username}</b></div><div><span>Email address</span><b>${email}</b></div></div></div><div class="form-card"><h3>Account Status</h3><div class="summary-lines"><div><span>Member type</span><b>Spinner</b></div><div><span>Saved favorites</span><b>${state.favorites.length}</b></div><div><span>Cart items</span><b>${state.cart.length}</b></div></div></div></div></div>`;
-  if (section === 'orders') content = `<div class="profile-block"><h2>Order History</h2><div class="empty">You have not placed an order yet.<br /><button class="btn dark" data-view="shop">Explore the shop</button></div></div>`;
+  if (section === 'orders') content = `<div class="profile-block"><h2>Order History</h2>${state.orders.length ? state.orders.map(order => `<article class="saved-mod"><div><b>${order.id}</b><p>${order.date} · ${order.items} item${order.items === 1 ? '' : 's'} · ${order.payment}</p></div><div><b>${money(order.total)}</b><br /><span class="status cyan">${order.status}</span></div></article>`).join('') : '<div class="empty">You have not placed an order yet.<br /><button class="btn dark" data-view="shop">Explore the shop</button></div>'}</div>`;
   if (section === 'wishlist') { const saved = products.filter(product => state.favorites.includes(product.id)); content = `<div class="profile-block"><h2>Wishlist</h2>${saved.length ? `<div class="product-grid">${saved.map(productCard).join('')}</div>` : '<div class="empty">Your wishlist is empty.<br /><button class="btn dark" data-view="shop">Explore the shop</button></div>'}</div>`; }
   if (section === 'saved') content = `<div class="profile-block"><h2>Saved Mods</h2>${state.savedMods.length ? state.savedMods.map((mod, index) => `<article class="saved-mod"><div><b>${mod.name}</b><p>${mod.parts}</p></div><div><b>${money(mod.price)}</b><br /><button class="btn small" data-reorder-mod="${index}">Add to cart</button></div></article>`).join('') : '<div class="empty">Save a custom mod from the builder to keep it here.<br /><button class="btn dark" data-view="builder">Open builder</button></div>'}</div>`;
   if (section === 'settings') content = `<div class="profile-block"><h2>Settings</h2><div class="settings-panel"><label class="settings-option"><span><h3>Dark Mode</h3><p>Use the darker Pendace interface.</p></span><input type="checkbox" data-setting="darkMode" ${state.settings.darkMode ? 'checked' : ''} /></label><label class="settings-option"><span><h3>Order Notifications</h3><p>Receive updates for orders and saved mods.</p></span><input type="checkbox" data-setting="notifications" ${state.settings.notifications ? 'checked' : ''} /></label><label class="settings-option"><span><h3>Private Profile</h3><p>Keep your account information private.</p></span><input type="checkbox" data-setting="privacy" ${state.settings.privacy ? 'checked' : ''} /></label><div class="settings-option"><span><h3>Account preferences</h3><p>Member account: ${state.user.username}</p></span><button class="btn small" data-account-signout>Sign out</button></div></div></div>`;
@@ -411,6 +420,43 @@ document.addEventListener('change', event => {
 document.addEventListener('input', event => {
   if (event.target.id === 'catalog-search') { event.stopImmediatePropagation(); state.shopFilters.query = event.target.value; applyShopFilters(); }
 }, true);
+
+function placeOrder() {
+  const form = document.querySelector('#checkout-form');
+  if (!form) return;
+  if (!form.checkValidity()) {
+    document.querySelector('#checkout-error').textContent = 'Complete every delivery field before placing your order.';
+    form.reportValidity();
+    return;
+  }
+  const total = state.cart.reduce((sum, item) => sum + item.price, 0);
+  const order = { id: `#PEN-${String(1025 + state.orders.length).padStart(4, '0')}`, date: new Intl.DateTimeFormat('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date()), items: state.cart.length, total, payment: state.payment, status: 'Processing' };
+  state.orders.unshift(order);
+  state.latestOrder = { ...order, products: [...state.cart] };
+  state.cart = [];
+  updateNav();
+  render('confirmation');
+}
+
+document.addEventListener('click', event => {
+  if (!event.target.closest('[data-place-order]')) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  placeOrder();
+}, true);
+
+document.addEventListener('submit', event => {
+  if (event.target.id !== 'checkout-form') return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  placeOrder();
+}, true);
+
+confirmationPage = () => {
+  const order = state.latestOrder;
+  if (!order) return `<div class="page"><div class="confirmation"><h1>No order to confirm.</h1><button class="btn dark" data-view="shop">Return to shop</button></div></div>`;
+  return `<div class="page"><div class="confirmation"><div class="avatar">✓</div><h1>Order Confirmed!</h1><p>Your spinning gear is on its way to the launch site.</p><div class="receipt"><div class="receipt-row"><span>Order Protocol</span><b>${order.id}</b></div><div class="receipt-row"><span>Order Date</span><b>${order.date}</b></div><div class="receipt-row"><span>Payment Authorized</span><b>${order.payment}</b></div><h3>Items dispatched</h3>${order.products.map(item => `<div class="receipt-row"><span>${item.name}<br /><small>Qty: 1</small></span><b>${money(item.price)}</b></div>`).join('')}<div class="summary-total"><span>Total settlement</span><b>${money(order.total)}</b></div></div><div class="button-row"><button class="btn dark" data-account-section="orders">Track order</button><button class="btn" data-view="shop">Continue shopping</button></div></div></div>`;
+};
 
 const originalRender = render;
 render = view => { originalRender(view); if (state.view === 'shop') applyShopFilters(); document.body.classList.toggle('dark-mode', state.settings.darkMode); };
