@@ -1,2 +1,116 @@
-@media(max-width:850px){.global-search{display:flex!important;width:34px!important;flex:0 0 34px!important}.global-search input{display:none!important}.global-search button{width:34px!important;border-left:0!important}.header-icons{gap:8px!important}.header-icons button:first-of-type{font-size:17px!important}}
-@media(max-width:520px){.store-header{gap:8px!important}.brand span small{display:none}.global-search{height:30px!important;width:30px!important;flex-basis:30px!important}.global-search button{width:30px!important}.header-icons{gap:3px!important}}
+@media (max-width: 850px) {
+  .global-search {
+    display: flex !important;
+    width: 34px !important;
+    flex: 0 0 34px !important;
+  }
+  .global-search input {
+    display: none !important;
+  }
+  .global-search button {
+    width: 34px !important;
+    border-left: 0 !important;
+  }
+  .header-icons {
+    gap: 8px !important;
+  }
+  .header-icons button:first-of-type {
+    font-size: 17px !important;
+  }
+}
+@media (max-width: 520px) {
+  .store-header {
+    gap: 8px !important;
+  }
+  .brand span small {
+    display: none;
+  }
+  .global-search {
+    height: 30px !important;
+    width: 30px !important;
+    flex-basis: 30px !important;
+  }
+  .global-search button {
+    width: 30px !important;
+  }
+  .header-icons {
+    gap: 3px !important;
+  }
+}
+/* Let the footer follow the rendered content at every browser zoom level.
+   Fixed viewport minimum-heights create a large empty gap when the page is
+   zoomed out because the CSS viewport becomes much taller. */
+#app,
+.page,
+.login-page,
+.admin {
+  min-height: 0;
+}
+
+/* Keep the analysis panel visually balanced: header, diagram, then readings. */
+.schematic {
+  min-height: 300px;
+  padding: 24px 28px 20px;
+  display: grid;
+  grid-template-rows: auto minmax(128px, 1fr) auto;
+}
+
+.scheme-head {
+  align-items: start;
+  gap: 16px;
+}
+
+.scheme-head span {
+  display: block;
+  color: #dce5ff;
+  font: 10px/1.2 var(--mono);
+  text-transform: uppercase;
+}
+
+.scheme-head strong {
+  display: block;
+  margin-top: 5px;
+  color: #fff;
+  font:
+    800 13px/1.1 Outfit,
+    Arial,
+    sans-serif;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+}
+
+.scheme-head b {
+  min-width: 52px;
+  padding: 7px 8px;
+  text-align: center;
+  font: 800 9px/1 var(--mono);
+  text-transform: uppercase;
+}
+
+.schematic .pen-drawing {
+  width: min(100%, 440px);
+  height: 100%;
+  min-height: 128px;
+  margin: 0 auto;
+  transform: rotate(-9deg);
+}
+
+.schematic .scheme-data {
+  align-self: end;
+  min-height: 38px;
+  align-items: end;
+}
+
+@media (max-width: 520px) {
+  .schematic {
+    min-height: 275px;
+    padding: 20px;
+  }
+
+  .scheme-head strong {
+    font-size: 12px;
+  }
+  .schematic .scheme-data {
+    gap: 12px;
+  }
+}
