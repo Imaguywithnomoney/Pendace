@@ -81,7 +81,7 @@ const money = (value) =>
 
 function productCard(product, compact = false) {
   const saved = state.favorites.includes(product.id);
-  return `<article class="product-card" data-product-card="${product.id}" tabindex="0"><span class="badge">${product.badge}</span><button class="favorite-button ${saved ? "is-favorite" : ""}" data-favorite="${product.id}" aria-label="${saved ? "Remove" : "Add"} ${product.name} from favorites">${saved ? "♥" : "♡"}</button><img src="${product.image}" alt="${product.name}" /><div class="card-content"><div class="rating">★★★★★ <span>4.9/5</span></div><h3>${product.name}</h3><p>${product.size}</p><div class="product-bottom"><strong>${money(product.price)}</strong><button class="add-button" data-add="${product.id}" aria-label="Add ${product.name}">+</button></div></div></article>`;
+  return `<article class="product-card" data-product-card="${product.id}"><span class="badge">${product.badge}</span><button class="favorite-button ${saved ? "is-favorite" : ""}" data-favorite="${product.id}" aria-label="${saved ? "Remove" : "Add"} ${product.name} from favorites">${saved ? "♥" : "♡"}</button><img src="${product.image}" alt="${product.name}" /><div class="card-content"><div class="rating">★★★★★ <span>4.9/5</span></div><h3>${product.name}</h3><p>${product.size}</p><div class="product-bottom"><strong>${money(product.price)}</strong><button class="add-button" data-add="${product.id}" aria-label="Add ${product.name}">+</button></div></div></article>`;
 }
 function pageHead(title, crumb = "Home") {
   return `<div class="breadcrumbs"><button data-view="home">Home</button> › ${crumb}</div><h1 class="page-title">${title}</h1>`;
@@ -391,7 +391,7 @@ builderPage = () => {
   const cards = builderParts
     .map(
       (part, index) =>
-        `<article class="choice ${selected.name === part.name ? "selected" : ""}" data-component="${index}" tabindex="0"><div class="blank-img"><img src="${part.image}" alt="${part.name}" /></div><strong>${part.name}</strong><small>${money(part.price)}</small><button data-component="${index}">${selected.name === part.name ? "Selected" : "Select"}</button></article>`,
+        `<article class="choice ${selected.name === part.name ? "selected" : ""}" data-component="${index}"><div class="blank-img"><img src="${part.image}" alt="${part.name}" /></div><strong>${part.name}</strong><small>${money(part.price)}</small><button data-component="${index}">${selected.name === part.name ? "Selected" : "Select"}</button></article>`,
     )
     .join("");
   return `<div class="page">${pageHead("Build Your Custom Pen Mod", "Pen Mod Builder")}<p class="page-subtitle">Design your perfect spinner from premium components.</p><div class="steps"><span>● Step 1<b>Select Body</b></span><span>—</span><span>2 Step 2<b>Grip Options</b></span><span>—</span><span>3 Step 3<b>Tips Material</b></span><span>—</span><span>4 Step 4<b>Caps & Extras</b></span></div><div class="builder-layout"><section><p class="eyebrow">● Select Body Component</p><div class="choice-grid">${cards}</div></section><aside class="checkout-card"><h3>Your Custom Mod</h3><div class="summary-preview"><img src="${selected.image}" alt="${selected.name} preview" /></div><div class="summary-lines"><div><span>Body:</span><b>${selected.name}</b></div><div><span>Grip:</span><em>(Not selected)</em></div><div><span>Tips:</span><em>(Not selected)</em></div><div><span>Caps:</span><em>(Not selected)</em></div></div><div class="summary-total"><span>Estimated Total</span><b>${money(selected.price)}</b></div><button class="btn cyan builder-action-primary" data-add-custom>Add custom mod to cart</button><button class="btn builder-action-secondary" data-reset-builder>Reset build</button></aside></div></div>`;
@@ -943,7 +943,7 @@ builderPage = () => {
   const cards = activeItems
     .map(
       (item) =>
-        `<article class="choice ${selectedItem?.id === item.id ? "selected" : ""}" data-builder-select="${section}:${item.id}" tabindex="0"><div class="blank-img"><img src="${item.image}" alt="${item.name}" /></div><strong>${item.name}</strong><small>${money(item.price)}</small><button data-builder-select="${section}:${item.id}">${selectedItem?.id === item.id ? "Selected" : "Select"}</button></article>`,
+        `<article class="choice ${selectedItem?.id === item.id ? "selected" : ""}" data-builder-select="${section}:${item.id}"><div class="blank-img"><img src="${item.image}" alt="${item.name}" /></div><strong>${item.name}</strong><small>${money(item.price)}</small><button data-builder-select="${section}:${item.id}">${selectedItem?.id === item.id ? "Selected" : "Select"}</button></article>`,
     )
     .join("");
   const value = (item) => item?.name || "(Not selected)";
