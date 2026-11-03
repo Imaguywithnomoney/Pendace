@@ -1,0 +1,103 @@
+/*
+  Accessibility refinements
+  -------------------------
+  These rules preserve the Pendace palette while meeting readable text-size
+  and contrast expectations identified by the WAVE accessibility report.
+*/
+
+:root {
+  --muted: #536178;
+  --accessible-link: #1d3ed1;
+  --accessible-accent: #00758a;
+}
+
+/* Keep labels available to assistive technology without showing duplicate UI. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Text previously rendered at 7–10px is now legible at normal zoom levels. */
+.brand small,
+.eyebrow,
+.stats small,
+.scheme-head,
+.scheme-data,
+.badge,
+.rating,
+.product-card p,
+.text-action,
+#store-footer,
+#store-footer small {
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+
+.brand small,
+.stats small {
+  font-size: 11px !important;
+}
+
+.badge {
+  font-weight: 700;
+}
+
+/* Replace cyan-as-text with an accessible teal while keeping cyan surfaces. */
+.store-nav button,
+.header-icons button {
+  color: #4a5d7a;
+}
+
+.store-nav button:hover,
+.store-nav button.active,
+.header-icons button:hover,
+.text-action {
+  color: var(--accessible-link);
+}
+
+.rating {
+  color: var(--accessible-accent);
+  font-weight: 700;
+}
+
+.page-subtitle,
+.section-head p,
+.product-card p,
+.empty,
+.catalog-toolbar,
+.filter-list {
+  color: var(--muted);
+}
+
+/* The dark palette remains readable when settings enable dark mode. */
+.dark-mode .rating,
+.dark-mode .text-action,
+.dark-mode .store-nav button.active,
+.dark-mode .header-icons button:hover {
+  color: #38eaff;
+}
+
+.dark-mode .store-nav button:not(.active),
+.dark-mode .header-icons button {
+  color: #d5e1f2;
+}
+
+@media (max-width: 520px) {
+  .brand small,
+  .stats small {
+    font-size: 10px !important;
+  }
+
+  .badge,
+  .rating,
+  .product-card p {
+    font-size: 11px !important;
+  }
+}

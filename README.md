@@ -45,6 +45,7 @@ Pendace Website System/
 ├── catalog-fixes.css        Shop catalog and empty-state refinements
 ├── interaction-fixes.css    Hover, focus, and account-form interactions
 ├── feature-upgrades.css     Filters, account settings, dark mode, and new features
+├── accessibility.css         Contrast, text-size, and screen-reader refinements
 ├── images/                  Local product and brand images
 ├── CREDENTIALS.md           Prototype-only sign-in credentials
 └── references/              Original design reference images
